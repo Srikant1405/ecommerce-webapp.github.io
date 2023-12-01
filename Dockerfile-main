@@ -6,10 +6,11 @@ RUN apk update \
     && apk add openjdk8 curl \
     && rm -rf /var/cache/apk/*
 
-RUN curl -o apache-tomcat-9.0.78.tar.gz https://downloads.apache.org/tomcat/tomcat-9/v9.0.78/bin/apache-tomcat-9.0.78.tar.gz \
-    && tar -zxvf apache-tomcat-9.0.78.tar.gz \
-    && mv apache-tomcat-9.0.78 ${CATALINA_HOME} \
-    && rm apache-tomcat-9.0.78.tar.gz
+RUN mkdir -p /usr/local/tomcat \
+    && curl -SL https://archive.apache.org/dist/tomcat/tomcat-9/v9.0.50/bin/apache-tomcat-9.0.50.tar.gz | tar -xz -C /usr/local/tomcat --strip-components=1 \
+    && tar -zxvf apache-tomcat-9.0.50.tar.gz \
+    && mv apache-tomcat-9.0.50 ${CATALINA_HOME} \
+    && rm apache-tomcat-9.0.50.tar.gz
 
 COPY tomcat-users.xml ${CATALINA_HOME}/conf/tomcat-users.xml
 COPY context.xml ${CATALINA_HOME}/webapps/manager/META-INF/context.xml
