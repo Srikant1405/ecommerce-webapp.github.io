@@ -1,17 +1,17 @@
 FROM alpine:latest
 
 ENV CATALINA_HOME /usr/local/tomcat
-ENV TOMCAT_VERSION 9.0.50
-ENV TOMCAT_URL https://archive.apache.org/dist/tomcat/tomcat-9/v${TOMCAT_VERSION}/bin/apache-tomcat-${TOMCAT_VERSION}.tar.gz
+ENV TOMCAT_VERSION 9.0.59
+
 
 RUN apk update \
     && apk add openjdk8 curl \
     && rm -rf /var/cache/apk/*
 
-RUN wget ${TOMCAT_URL} -O /tmp/tomcat.tar.gz \
-    && tar -zxvf /tmp/tomcat.tar.gz -C \
-    &&  mv apache-tomcat-9.0.50 ${CATALINA_HOME} \
-    &&  rm apache-tomcat-9.0.50.tar.gz
+RUN curl -o apache-tomcat-${TOMCAT_VERSION}.tar.gz https://downloads.apache.org/tomcat/tomcat-9/v${TOMCAT_VERSION}/bin/apache-tomcat-${TOMCAT_VERSION}.tar.gz && \
+    tar -zxvf apache-tomcat-${TOMCAT_VERSION}.tar.gz -C /opt && \
+    mv /opt/apache-tomcat-${TOMCAT_VERSION} ${CATALINA_HOME} && \
+    rm apache-tomcat-${TOMCAT_VERSION}.tar.gz
 
 
 COPY tomcat-users.xml ${CATALINA_HOME}/conf/tomcat-users.xml
