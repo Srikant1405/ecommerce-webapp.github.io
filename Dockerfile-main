@@ -3,7 +3,6 @@ FROM alpine:latest
 ENV CATALINA_HOME /usr/local/tomcat
 ENV TOMCAT_VERSION 9.0.59
 
-
 RUN apk update \
     && apk add openjdk8 curl \
     && rm -rf /var/cache/apk/*
@@ -13,16 +12,15 @@ RUN curl -o apache-tomcat-${TOMCAT_VERSION}.tar.gz https://downloads.apache.org/
     mv /opt/apache-tomcat-${TOMCAT_VERSION} ${CATALINA_HOME} && \
     rm apache-tomcat-${TOMCAT_VERSION}.tar.gz
 
-
 COPY tomcat-users.xml ${CATALINA_HOME}/conf/tomcat-users.xml
 COPY context.xml ${CATALINA_HOME}/webapps/manager/META-INF/context.xml
 COPY context.xml ${CATALINA_HOME}/webapps/host-manager/META-INF/context.xml
 
-RUN mkdir ${CATALINA_HOME}/webapps/html-files \
-    && COPY index.html ${CATALINA_HOME}/webapps/html-files/ \
-    && COPY index.css ${CATALINA_HOME}/webapps/html-files/ \
-    && COPY index.js ${CATALINA_HOME}/webapps/html-files/ \
-    && COPY media/ ${CATALINA_HOME}/webapps/html-files/
+RUN mkdir ${CATALINA_HOME}/webapps/html-files
+COPY index.html ${CATALINA_HOME}/webapps/html-files/
+COPY index.css ${CATALINA_HOME}/webapps/html-files/
+COPY index.js ${CATALINA_HOME}/webapps/html-files/
+COPY media/ ${CATALINA_HOME}/webapps/html-files/
 
 EXPOSE 8080
 CMD ["sh", "-c", "${CATALINA_HOME}/bin/catalina.sh run"]
