@@ -7,7 +7,7 @@ RUN apk update \
     && apk add openjdk8 curl \
     && rm -rf /var/cache/apk/*
 
-RUN curl -o apache-tomcat-${TOMCAT_VERSION}.tar.gz https://downloads.apache.org/tomcat/tomcat-9/v${TOMCAT_VERSION}/bin/apache-tomcat-${TOMCAT_VERSION}.tar.gz && \
+RUN curl -O https://downloads.apache.org/tomcat/tomcat-9/v${TOMCAT_VERSION}/bin/apache-tomcat-${TOMCAT_VERSION}.tar.gz && \
     tar -zxvf apache-tomcat-${TOMCAT_VERSION}.tar.gz -C /opt && \
     mv /opt/apache-tomcat-${TOMCAT_VERSION} ${CATALINA_HOME} && \
     rm apache-tomcat-${TOMCAT_VERSION}.tar.gz
