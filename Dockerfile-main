@@ -7,9 +7,9 @@ RUN apk update \
     && apk add openjdk8 curl wget \
     && rm -rf /var/cache/apk/*
 
-RUN curl -O apache-tomcat-10.0.20.tar.gz https://dlcdn.apache.org/tomcat/tomcat-10/v10.0.20/bin/apache-tomcat-10.0.20.tar.gz && \
-    tar -zxvf apache-tomcat-10.0.20.tar.gz -C /opt && \
-    mv /opt/apache-tomcat-10.0.20 ${CATALINA_HOME} && \
+RUN curl -O apache-tomcat-9.8.83.tar.gz https://dlcdn.apache.org/tomcat/tomcat-10/v9.8.83/bin/apache-tomcat-9.8.83.tar.gz && \
+    tar -zxvf apache-tomcat-9.8.83.tar.gz -C /opt && \
+    mv /opt/apache-tomcat-9.8.83 ${CATALINA_HOME} && \
     rm apache-tomcat-10.0.20.tar.gz
 
 COPY tomcat-users.xml ${CATALINA_HOME}/conf/tomcat-users.xml
