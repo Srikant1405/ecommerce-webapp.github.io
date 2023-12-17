@@ -10,9 +10,9 @@ RUN \
     openssl
 WORKDIR /var/www/localhost/htdocs
 
-COPY index.html /var/www/localhost/htdocs
-COPY index.css  /var/www/localhost/htdocs
-COPY index.js /var/www/localhost/htdocs
+COPY ecommerce-webapp/index.html /var/www/localhost/htdocs
+COPY ecommerce-webapp/index.css  /var/www/localhost/htdocs
+COPY ecommerce-webapp/index.js /var/www/localhost/htdocs
 COPY ecommerce-webapp/media /var/www/localhost/htdocs
 EXPOSE 80
 CMD ["/usr/sbin/httpd", "-D", "FOREGROUND"]
