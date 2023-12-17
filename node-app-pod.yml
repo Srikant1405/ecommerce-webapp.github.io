@@ -1,12 +1,14 @@
 apiVersion: v1
 kind: Pod
 metadata:
-  name: nodeapp
+  name: soppy-app
   labels:
-    app: nodeapp
+    app: soppy-app
 spec:
   containers:
-    - name: nodeapp
+    - name: soppy-app
       image: danikohale/soppy
       ports:
         - containerPort: 8080
+      imagePullPolicy: Always
+     
