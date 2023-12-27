@@ -1,1 +1,1 @@
-Soppy web-application 
+shopping web-application
