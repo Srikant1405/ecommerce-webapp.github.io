@@ -1,89 +1,37 @@
 pipeline {
-    agent {
-        label'agent2'
-    }
-
-    environment {
-        SCANNER_HOME = tool 'sonar-scanner'
-    }
+    agent any
 
     stages {
-        stage("Clean workspace") {
+        stage('Clone Repository') {
             steps {
-                cleanWs()
+                echo 'Cloning the repository...'
+                sh 'sudo rm -rf /app && sudo mkdir -p /app && sudo chown -R jenkins:jenkins /app'
+                sh 'git clone https://github.com/Srikant1405/ecommerce-webapp.github.io.git /app'
             }
         }
 
-        stage("SCM") {
-            steps {  
-                script {
-                    // Clone the Git repository
-                    sh "git clone https://github.com/Danishkohale/ecommerce-webapp.git"
-                }
+        stage('Install NGINX') {
+            steps {
+                echo 'Installing NGINX...'
+                sh '''
+                sudo apt-get update
+                sudo apt-get install -y nginx
+                '''
             }
         }
 
-        stage("SonarQube") {
+        stage('Copy Files') {
             steps {
-                script {
-                    def scannerHome = tool 'sonar-scanner'
-                    withSonarQubeEnv('sonar-scanner') {
-                        sh """$scannerHome/bin/sonar-scanner \
-                            -Dsonar.projectKey=jenkins \
-                            -Dsonar.sources=. \
-                            -Dsonar.host.url=http://13.201.4.166:9000 \
-                            -Dsonar.login=49afc9a5e02a3f3d00a098e5de8f70e724e6d0c6"""
-                    }
-                }
-            }
-        }
-        
-    //      stage("Quality Gate") {
-    //         steps {
-    //           timeout(time: 60, unit: 'SECOND') {
-    //           waitForQualityGate abortPipeline: false, credentialsId: 'sonar'
-    //           }
-    //         }
-    //       }  
-        
-     
-
-    stage("Build Docker Image") {
-            steps {
-                script {
-                    // Build the Docker image using the specified Dockerfile
-                    sh "sudo docker build -t danikohale/soppy -f ecommerce-webapp/Dockerfile-main . "
-                }
+                echo 'Copying files to /var/www/html...'
+                sh 'sudo cp -r /app/* /var/www/html/'
             }
         }
 
-        stage("Push Docker Image to Registry") {
+        stage('Restart NGINX') {
             steps {
-                script {
-                    // Push the Docker image to the registry
-                    // withCredentials([usernamePassword(credentialsId: 'DockerHub', passwordVariable: 'dockerhub_passwd', usernameVariable: 'dockerhub_username')]) {
-                    //     // Log in to Docker Hub
-                    //     sh "docker login -u ${env.dockerhub_username} -p ${env.dockerhub_passwd}"
-                    //     // Push the Docker image to Docker Hub
-                        sh "sudo docker push danikohale/soppy"
-                    }
-                }
-            }
-        
-         stage("Deploy in Kubernates") {
-            steps {
-                    
-                 script{
-                    //   sh"kubectl delete svc my-app-service"
-                    //   sh"kubectl scale deployment soppy-app-deployment --replicas=0" 
-                      sh"kubectl apply -f ecommerce-webapp/app-deployment.yml"
-                      sh"kubectl apply -f ecommerce-webapp/service.yml"
-                      sh"kubectl get svc -o wide"
-                    
-                 }
-               
+                echo 'Restarting NGINX server...'
+                sh 'sudo systemctl restart nginx'
             }
         }
-
     }
 }
